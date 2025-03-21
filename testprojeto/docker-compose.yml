@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+    db:
+        image: postgres:latest
+        container_name: postgres_db
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: contabilidade_pdf
+        ports:
+          - "5432:5432"
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+    
+    app:
+        build:
+        container_name: contabilidade_pdf_app
+        ports:
+          - "8080:8080"
+        depends_on:
+          - db
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/contabilidade_pdf
+            SPRING_DATASOURCE_URSERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: root
+            SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+volumes:
+    postgres_data 
+    
