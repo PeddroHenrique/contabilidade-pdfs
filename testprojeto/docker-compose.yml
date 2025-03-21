@@ -13,7 +13,7 @@ services:
           - postgres_data:/var/lib/postgresql/data
     
     app:
-        build:
+        build: .
         container_name: contabilidade_pdf_app
         ports:
           - "8080:8080"
@@ -26,5 +26,5 @@ services:
             SPRING_JPA_HIBERNATE_DDL_AUTO: validate
 
 volumes:
-    postgres_data 
+    postgres_data:
     
