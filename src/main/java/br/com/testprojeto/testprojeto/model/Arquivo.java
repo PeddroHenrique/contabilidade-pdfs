@@ -25,8 +25,11 @@ public class Arquivo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "varchar(255)")
     private String apelidoArquivo;
+    @Column(columnDefinition = "varchar(255)")
     private String nomeArquivo;
+    @Column(columnDefinition = "varchar(255)")
     private String caminhoArquivo;
 
     @CreatedDate
@@ -34,9 +37,8 @@ public class Arquivo {
     private LocalDateTime dataCriacao;
 
     @LastModifiedDate
-    @Column(nullable = false)
     private LocalDateTime dataAtualizacao;
-    
+
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = true)
     private Cliente cliente;

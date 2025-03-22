@@ -1,17 +1,16 @@
-version: '3.8'
 services:
     db:
-        image: postgres:latest
+        image: postgres:17-alpine
         container_name: postgres_db
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: root
-            POSTGRES_DB: contabilidade_pdf
+            POSTGRES_DB: contabilidade
         ports:
-          - "5432:5432"
+          - "5433:5432"
         volumes:
           - postgres_data:/var/lib/postgresql/data
-    
+
     app:
         build: .
         container_name: contabilidade_pdf_app
@@ -20,8 +19,8 @@ services:
         depends_on:
           - db
         environment:
-            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/contabilidade_pdf
-            SPRING_DATASOURCE_URSERNAME: postgres
+            SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/contabilidade
+            SPRING_DATASOURCE_USERNAME: postgres
             SPRING_DATASOURCE_PASSWORD: root
             SPRING_JPA_HIBERNATE_DDL_AUTO: validate
 

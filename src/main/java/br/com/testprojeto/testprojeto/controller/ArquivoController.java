@@ -52,13 +52,13 @@ public class ArquivoController {
         model.addAttribute("totalItems", arquivosPage.getTotalElements());
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
-        return "/arquivo/listar-arquivo";
+        return "arquivo/listar-arquivo";
     }
 
     @GetMapping("/formulario")
     public String formularioArquivos(Arquivo arquivo, Model model) {
         model.addAttribute("clientes", clienteService.listarClientes());
-        return "/arquivo/formulario-arquivo";
+        return "arquivo/formulario-arquivo";
     }
 
     @PostMapping("/salvar")
@@ -81,7 +81,7 @@ public class ArquivoController {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
         model.addAttribute("clientes", clienteService.listarClientes());
         model.addAttribute("arquivo", arquivo);
-        return "/arquivo/editar-arquivo";
+        return "arquivo/editar-arquivo";
     }
 
     @GetMapping("/visualizar/{id}")
@@ -89,7 +89,7 @@ public class ArquivoController {
             Model model) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
         model.addAttribute("arquivo", arquivo);
-        return "/arquivo/visualizar-arquivo";
+        return "arquivo/visualizar-arquivo";
     }
 
     @PostMapping("/deletar/{id}")
@@ -103,7 +103,7 @@ public class ArquivoController {
         return "redirect:/api/arquivo";
     }
     
-    @GetMapping("/vizualizar-pdf/{id}")
+    @GetMapping("vizualizar-pdf/{id}")
     public void visualizarPdf(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
         Path filePath = Paths.get(arquivo.getCaminhoArquivo());

@@ -42,12 +42,12 @@ public class ClienteController {
         model.addAttribute("totalItems", clientesPage.getTotalElements());
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
-        return "/cliente/listar-cliente";
+        return "cliente/listar-cliente";
     }
     
     @GetMapping("/formulario")
     public String formularioClientes(@ModelAttribute("cliente") Cliente cliente) {
-        return "/cliente/formulario-cliente";
+        return "cliente/formulario-cliente";
     }
     
     @PostMapping("salvar")
@@ -61,7 +61,7 @@ public class ClienteController {
             Model model) {
         Cliente cliente = clienteService.listarCliente(id);
         model.addAttribute("cliente", cliente);
-        return "/cliente/editar-cliente";
+        return "cliente/editar-cliente";
     }
     
     @GetMapping("/visualizar/{id}")
@@ -69,7 +69,7 @@ public class ClienteController {
             Model model) {
         Cliente cliente = clienteService.listarCliente(id);
         model.addAttribute("cliente", cliente);
-        return "/cliente/visualizar-cliente";
+        return "cliente/visualizar-cliente";
     }
     
     @PostMapping("/deletar/{id}")
