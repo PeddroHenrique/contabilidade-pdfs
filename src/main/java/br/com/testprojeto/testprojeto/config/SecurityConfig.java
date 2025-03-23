@@ -30,8 +30,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/documentos/**").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/api/registro/**", "/api/login/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
         return http.build();
