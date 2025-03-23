@@ -33,14 +33,14 @@ public class Arquivo {
     private String caminhoArquivo;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime dataCriacao;
 
     @LastModifiedDate
     private LocalDateTime dataAtualizacao;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = true)
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
     public Long getId() {
