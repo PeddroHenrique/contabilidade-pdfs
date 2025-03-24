@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 /**
  *
@@ -44,14 +44,26 @@ public class ArquivoController {
     @GetMapping()
     public String listarArquivos(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
             Model model) {
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<Arquivo> arquivosPage = arquivoService.listarArquivosPaginacao(pageable);
+        Page<Arquivo> arquivosPage;
+
+        if (!StringUtils.isEmptyOrWhitespace(search)) {
+            arquivosPage = arquivoService.listarArquivosPorNomeCliente(search, pageable);
+        } else {
+            arquivosPage = arquivoService.listarArquivosPaginacao(pageable);
+        }
+
+        System.out.println("PESQUISA: " + search);
+
         model.addAttribute("arquivos", arquivosPage.getContent());
         model.addAttribute("totalPages", arquivosPage.getTotalPages());
         model.addAttribute("totalItems", arquivosPage.getTotalElements());
         model.addAttribute("currentPage", page);
         model.addAttribute("size", size);
+        model.addAttribute("search", search);
         return "arquivo/listar-arquivo";
     }
 

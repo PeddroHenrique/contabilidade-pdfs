@@ -44,6 +44,9 @@ public class ArquivoService {
     public Page<Arquivo> listarArquivosPaginacao(Pageable pageable) {
         return arquivoRepository.findAllByOrderByDataCriacaoDesc(pageable);
     }
+    public Page<Arquivo> listarArquivosPorNomeCliente(String nome, Pageable pageable) {
+        return arquivoRepository.findAllByClienteNomeOrderByDataCriacaoDesc(nome, pageable);
+    }
 
     public void salvarArquivo(MultipartFile file, Arquivo arquivo) throws IOException {
         // verifica se o diretório existe, se não, cria

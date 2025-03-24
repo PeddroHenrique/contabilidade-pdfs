@@ -23,7 +23,7 @@ public class Cliente {
     private String nome;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "users_id")
     private User user;
     
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)

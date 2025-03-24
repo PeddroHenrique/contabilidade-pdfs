@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("api/registro")
+@RequestMapping("/api/registro")
 public class RegistroController {
 
     @Autowired
@@ -22,12 +22,12 @@ public class RegistroController {
 
     @GetMapping
     public String registrarUsuario(Model model) {
-        model.addAttribute("user", new UserDto());
+        model.addAttribute("userDto", new UserDto());
         return "registro";
     }
 
     @PostMapping
-    public String salvarUsuario(@ModelAttribute("user") @Valid UserDto userDto,
+    public String salvarUsuario(@Valid UserDto userDto,
                                 BindingResult result,
                                 Model model) {
 

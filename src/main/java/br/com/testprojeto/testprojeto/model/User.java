@@ -19,7 +19,8 @@ public class User {
     @Column(columnDefinition = "varchar(255)", nullable = false)
     private String role;
 
-    private boolean enabled = true;
+    @Column(nullable = false)
+    private boolean enabled;
 
     public Long getId() {
         return id;

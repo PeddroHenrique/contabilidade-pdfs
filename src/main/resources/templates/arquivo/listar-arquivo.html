@@ -12,16 +12,25 @@
     <body>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <div class="mb-3">
                         <h5 class="card-title">Quantidade de Arquivos<span class="text-muted fw-normal ms-2" th:text="${'(' + totalItems + ')'}"></span></h5>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-5">
+                    <div class="d-flex flex-wrap align-items-left justify-content-start mb-3">
+                        <form th:action="@{/api/arquivo}" method="get" class="d-flex">
+                            <input type="text" name="search" class="form-control me-2" placeholder="Buscar por nome do cliente">
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-4">
                     <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                         <div>
                             <a th:href="@{/api/cliente}" class="btn btn-primary"><i class="bx bx-list-ul"></i> Listar Clientes</a>
                             <a th:href="@{/api/arquivo/formulario}" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Novo Arquivo</a>
+                            <a th:href="@{/api/logout}" class="btn btn-danger"><i class="bx bx-log-out"></i></a>
                         </div>
                     </div>
                 </div>

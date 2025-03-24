@@ -19,9 +19,9 @@ public class LoginController {
         if (error != null) {
             model.addAttribute("error", "Nome do usuário ou senha inválidos!");
         } else if (registered != null) {
-            model.addAttribute("registered", "Registro realizado com sucesso! Por favor, faça login.");
+            model.addAttribute("message", "Registro realizado com sucesso! Por favor, faça login.");
         } else if (logout != null) {
-            model.addAttribute("logout", "Você foi desconectado com sucesso!");
+            model.addAttribute("message", "Você foi desconectado com sucesso!");
         }
 
         return "login";

@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS users (
+    id BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    enabled BOOLEAN NOT NULL
+);
+
+ALTER TABLE cliente
+ADD users_id BIGINT;
+
+ALTER TABLE cliente
+ADD CONSTRAINT fk_users
+FOREIGN KEY (users_id)
+REFERENCES users(id);
+

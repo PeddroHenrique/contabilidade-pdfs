@@ -17,4 +17,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long>{
     Page<Arquivo> findAllByOrderByDataCriacaoDesc(Pageable pageable);
+    Page<Arquivo> findAllByClienteNomeOrderByDataCriacaoDesc(String nome, Pageable pageable);
 }

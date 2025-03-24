@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 public class UserDto {
 
     @NotBlank(message = "Usuário é obrigatório")
-    @Size(min = 3, max = 20, message = "Usuário ter entre 3 e 20 caracteres")
+    @Size(min = 3, max = 20, message = "Usuário deve ter entre 3 e 20 caracteres")
     private String username;
 
     @NotBlank(message = "Senha é obrigatória")

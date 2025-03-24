@@ -15,7 +15,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(User user) {
+    public void registerUser(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username já existe!");
@@ -23,6 +23,7 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
-        return userRepository.save(user);
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 }
