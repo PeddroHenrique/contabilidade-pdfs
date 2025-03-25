@@ -5,7 +5,9 @@
 package br.com.testprojeto.testprojeto.controller;
 
 import br.com.testprojeto.testprojeto.model.Cliente;
+import br.com.testprojeto.testprojeto.model.User;
 import br.com.testprojeto.testprojeto.service.ClienteService;
+import br.com.testprojeto.testprojeto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+import java.security.Principal;
+
 /**
  *
  * @author PEDRO
@@ -29,13 +34,19 @@ public class ClienteController {
     
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private UserService userService;
     
     @GetMapping
     public String listarClientes(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            Principal principal,
             Model model) {
+
         Pageable pageable = PageRequest.of(page, size);
-        Page<Cliente> clientesPage = clienteService.listarClientesPaginacao(pageable);
+        Page<Cliente> clientesPage = clienteService.listarClientesPaginacao(principal.getName(), pageable);
+
         model.addAttribute("clientes", clientesPage.getContent());
         model.addAttribute("totalPages", clientesPage.getTotalPages());
         model.addAttribute("totalItems", clientesPage.getTotalElements());
@@ -50,14 +61,17 @@ public class ClienteController {
     }
     
     @PostMapping("salvar")
-    public String salvarClientes(@ModelAttribute("cliente") Cliente cliente) {
+    public String salvarClientes(@ModelAttribute("cliente") Cliente cliente,
+                                 Principal principal) {
+        if (cliente.getUser() == null) {
+            cliente.setUser(userService.listarPorUsername(principal.getName()));
+        }
+
         if (cliente.getId() != null) {
             Cliente clienteExistente = clienteService.listarCliente(cliente.getId());
             clienteExistente.setNome(cliente.getNome());
             clienteService.salvarCliente(clienteExistente);
-            System.out.println("11111111111111111111111");
         } else {
-            System.out.println("222222222222222222222");
             clienteService.salvarCliente(cliente);
         }
         return "redirect:/api/cliente";
@@ -81,7 +95,11 @@ public class ClienteController {
     
     @PostMapping("/deletar/{id}")
     public String deletarCliente(@PathVariable("id") Long id) {
-        clienteService.deletarCliente(id);
+        try {
+            clienteService.deletarCliente(id);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
         return "redirect:/api/cliente";
     }
 }

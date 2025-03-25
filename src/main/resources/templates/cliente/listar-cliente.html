@@ -22,6 +22,7 @@
                         <div>
                             <a th:href="@{/api/arquivo}" class="btn btn-primary"><i class="bx bx-list-ul"></i> Listar Arquivos</a>
                             <a th:href="@{/api/cliente/formulario}" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Novo Cliente</a>
+                            <a th:href="@{/api/logout}" class="btn btn-danger"><i class="bx bx-log-out"></i></a>
                         </div>
                     </div>
                 </div>
@@ -67,7 +68,7 @@
                 <div class="col-sm-6">
                     <div>
                         <p class="mb-sm-0">
-                            <span th:text="'mostrando ' + ${currentPage * size + 1} + ' a '"></span>
+                            <span th:text="'mostrando ' + ${currentPage * size + (totalItems == 0 ? 0 : 1)} + ' a '"></span>
                             <span th:text="${(currentPage + 1) * size > totalItems ? totalItems : (currentPage + 1) * size} + ' de '"></span>
                             <span th:text="${totalItems > 1 ? totalItems + ' clientes' : totalItems + ' cliente'}"></span>
                         </p>
@@ -80,7 +81,7 @@
                                 <a th:href="@{/api/cliente(page=${currentPage - 1}, size=${size})}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
                             </li>
                             
-                            <li th:each="i : ${#numbers.sequence((currentPage > 1 ? currentPage - 1 : 0), (currentPage <= 1 ? (totalPages > 2 ? 2 : totalPages - 1) : (currentPage >= totalPages - 1 ? currentPage : currentPage + 1)))}" class="page-item" th:classappend="${i == currentPage} ? 'active' : ''">
+                            <li th:each="i : ${#numbers.sequence((currentPage > 1 ? currentPage - 1 : 0), (currentPage <= 1 ? (totalPages > 2 ? 2 : (totalPages > 0 ? totalPages - 1 : totalPages)) : (currentPage >= totalPages - 1 ? currentPage : currentPage + 1)))}" class="page-item" th:classappend="${i == currentPage} ? 'active' : ''">
                                 <a th:href="@{/api/cliente(page=${i}, size=${size})}" class="page-link" th:text="${i + 1}"></a></li>
                             
                             <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">

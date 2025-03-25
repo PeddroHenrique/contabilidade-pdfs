@@ -15,6 +15,11 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public User listarPorUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    }
+
     public void registerUser(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {

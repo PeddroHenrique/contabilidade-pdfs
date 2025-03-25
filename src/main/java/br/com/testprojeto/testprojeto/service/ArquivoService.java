@@ -41,11 +41,13 @@ public class ArquivoService {
                 .orElseThrow(() -> new NoSuchElementException("Arquivo não encontrado"));
     }
     
-    public Page<Arquivo> listarArquivosPaginacao(Pageable pageable) {
-        return arquivoRepository.findAllByOrderByDataCriacaoDesc(pageable);
+    public Page<Arquivo> listarArquivosPaginacao(String username,
+                                                 Pageable pageable) {
+        return arquivoRepository.findArquivosByClienteUsuario(username, pageable);
     }
-    public Page<Arquivo> listarArquivosPorNomeCliente(String nome, Pageable pageable) {
-        return arquivoRepository.findAllByClienteNomeOrderByDataCriacaoDesc(nome, pageable);
+
+    public Page<Arquivo> listarArquivosPorNomeCliente(String nome, String usuario, Pageable pageable) {
+        return arquivoRepository.findArquivosByClienteNomeAndUsuario(nome, usuario, pageable);
     }
 
     public void salvarArquivo(MultipartFile file, Arquivo arquivo) throws IOException {

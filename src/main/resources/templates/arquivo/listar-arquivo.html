@@ -83,7 +83,7 @@
             <div class="row g-0 align-items-center pb-4">
                 <div class="col-sm-6">
                     <div><p class="mb-sm-0">
-                            <span th:text="'mostrando ' + ${currentPage * size + 1} + ' a '"></span>
+                            <span th:text="'mostrando ' + ${currentPage * size + (totalItems == 0 ? 0 : 1)} + ' a '"></span>
                             <span th:text="${(currentPage + 1) * size > totalItems ? totalItems : (currentPage + 1) * size} + ' de '"></span>
                             <span th:text="${totalItems > 1 ? totalItems +  ' arquivos' : totalItems + ' arquivo'}"></span>
                         </p>

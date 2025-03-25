@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,18 +47,17 @@ public class ArquivoController {
     public String listarArquivos(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
+            Principal principal,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Arquivo> arquivosPage;
 
         if (!StringUtils.isEmptyOrWhitespace(search)) {
-            arquivosPage = arquivoService.listarArquivosPorNomeCliente(search, pageable);
+            arquivosPage = arquivoService.listarArquivosPorNomeCliente(search, principal.getName(), pageable);
         } else {
-            arquivosPage = arquivoService.listarArquivosPaginacao(pageable);
+            arquivosPage = arquivoService.listarArquivosPaginacao(principal.getName(), pageable);
         }
-
-        System.out.println("PESQUISA: " + search);
 
         model.addAttribute("arquivos", arquivosPage.getContent());
         model.addAttribute("totalPages", arquivosPage.getTotalPages());
@@ -68,8 +69,8 @@ public class ArquivoController {
     }
 
     @GetMapping("/formulario")
-    public String formularioArquivos(Arquivo arquivo, Model model) {
-        model.addAttribute("clientes", clienteService.listarClientes());
+    public String formularioArquivos(Arquivo arquivo, Model model, Principal principal) {
+        model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
         return "arquivo/formulario-arquivo";
     }
 
@@ -78,8 +79,6 @@ public class ArquivoController {
             @RequestParam("file") MultipartFile file,
             Model model) {
         try {
-            System.out.println("Id: " + arquivo.getCliente().getId());
-            System.out.println("Nome:" + arquivo.getCliente().getNome());
             arquivoService.salvarArquivo(file, arquivo);
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -89,9 +88,10 @@ public class ArquivoController {
 
     @GetMapping("/editar/{id}")
     public String editarArquivos(@PathVariable("id") Long id,
-            Model model) {
+                                 Model model,
+                                 Principal principal) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
-        model.addAttribute("clientes", clienteService.listarClientes());
+        model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
         model.addAttribute("arquivo", arquivo);
         return "arquivo/editar-arquivo";
     }
