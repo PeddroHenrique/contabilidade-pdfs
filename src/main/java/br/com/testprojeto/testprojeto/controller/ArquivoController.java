@@ -91,6 +91,7 @@ public class ArquivoController {
                                  Model model,
                                  Principal principal) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
+        System.out.println("CAMINHO DO ARQUIVO: " + arquivo.getCaminhoArquivo());
         model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
         model.addAttribute("arquivo", arquivo);
         return "arquivo/editar-arquivo";

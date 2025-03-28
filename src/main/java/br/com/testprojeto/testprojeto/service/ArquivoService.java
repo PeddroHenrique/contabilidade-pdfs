@@ -56,23 +56,28 @@ public class ArquivoService {
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
-        
-        if (!file.isEmpty()) {
-            if (arquivo.getId() != null) {
+
+        if (file == null || arquivo.getId() == null && file.isEmpty()) {
+            throw new RuntimeException("Arquivo não pode ser nulo ou vazio");
+        }
+
+        if (arquivo.getId() != null) {
+            if (!file.isEmpty()) {
                 Arquivo arquivoExistente = arquivoRepository.findById(arquivo.getId())
                         .orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
                 Files.deleteIfExists(Paths.get(arquivoExistente.getCaminhoArquivo()));
             }
-
-            // gera um nome único
-            String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            Path filePath = uploadPath.resolve(nomeArquivo);
-
-            // salva o arquivo no diretório
-            Files.copy(file.getInputStream(), filePath);
-            arquivo.setCaminhoArquivo(filePath.toString());
-            arquivo.setNomeArquivo(file.getOriginalFilename());
         }
+
+        // gera um nome único
+        String nomeArquivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(nomeArquivo);
+
+        // salva o arquivo no diretório
+        Files.copy(file.getInputStream(), filePath);
+        arquivo.setCaminhoArquivo(filePath.toString());
+        arquivo.setNomeArquivo(file.getOriginalFilename());
+
 
         arquivoRepository.save(arquivo);
     }

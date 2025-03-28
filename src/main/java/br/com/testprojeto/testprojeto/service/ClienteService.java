@@ -43,20 +43,18 @@ public class ClienteService {
 
     public Cliente listarCliente(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("cliente não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
-    public void salvarCliente(Cliente cliente) {
-        clienteRepository.save(cliente);
+    public Cliente salvarCliente(Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 
     public void deletarCliente(Long id) throws IOException {
         List<Arquivo> arquivos = arquivoRepository.findAllByClienteId(id);
 
-        if (!arquivos.isEmpty()) {
-            for (Arquivo arquivo : arquivos) {
-                Files.deleteIfExists(Paths.get(arquivo.getCaminhoArquivo()));
-            }
+        for (Arquivo arquivo : arquivos) {
+            Files.deleteIfExists(Paths.get(arquivo.getCaminhoArquivo()));
         }
         clienteRepository.deleteById(id);
     }

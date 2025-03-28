@@ -20,7 +20,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
-    public void registerUser(User user) {
+    public User registerUser(User user) {
 
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username já existe!");
@@ -29,6 +29,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         user.setEnabled(true);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }
