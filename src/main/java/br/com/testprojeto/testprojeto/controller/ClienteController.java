@@ -4,10 +4,13 @@
  */
 package br.com.testprojeto.testprojeto.controller;
 
+import br.com.testprojeto.testprojeto.config.annotation.EndpointProtegido;
 import br.com.testprojeto.testprojeto.model.Cliente;
-import br.com.testprojeto.testprojeto.model.User;
 import br.com.testprojeto.testprojeto.service.ClienteService;
 import br.com.testprojeto.testprojeto.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,7 @@ import java.security.Principal;
  *
  * @author PEDRO
  */
+@Tag(name = "CRUD Clientes", description = "Gerenciamento de clientes no sistema")
 @Controller
 @RequestMapping("/api/cliente")
 public class ClienteController {
@@ -37,7 +41,12 @@ public class ClienteController {
 
     @Autowired
     private UserService userService;
-    
+
+    @Operation(summary = "Lista os clientes",
+            description = "Exibe a página com todos os clientes do usuário na sessão.",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "GET")
+    @EndpointProtegido
     @GetMapping
     public String listarClientes(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -54,12 +63,24 @@ public class ClienteController {
         model.addAttribute("size", size);
         return "cliente/listar-cliente";
     }
-    
+
+    @Operation(summary = "Formulário de novos clientes",
+            description = "Contêm os campos necessários para criação do cliente",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "GET"
+    )
+    @EndpointProtegido
     @GetMapping("/formulario")
     public String formularioClientes(@ModelAttribute("cliente") Cliente cliente) {
         return "cliente/formulario-cliente";
     }
-    
+
+    @Operation(summary = "Salva os clientes",
+            description = "Realizar o salvamento dos novos clientes ou dos editados no banco de dados",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "POST"
+    )
+    @EndpointProtegido
     @PostMapping("salvar")
     public String salvarClientes(@ModelAttribute("cliente") Cliente cliente,
                                  Principal principal) {
@@ -76,7 +97,13 @@ public class ClienteController {
         }
         return "redirect:/api/cliente";
     }
-    
+
+    @Operation(summary = "Edita um cliente",
+            description = "Página onde um cliente específico pode ser editado baseado no id",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "GET"
+    )
+    @EndpointProtegido
     @GetMapping("/editar/{id}")
     public String editarClientes(@PathVariable("id") Long id,
             Model model) {
@@ -84,7 +111,13 @@ public class ClienteController {
         model.addAttribute("cliente", cliente);
         return "cliente/editar-cliente";
     }
-    
+
+    @Operation(summary = "Visualiza um cliente",
+            description = "Página onde um cliente específico é vizualizado baseado no id",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "GET"
+    )
+    @EndpointProtegido
     @GetMapping("/visualizar/{id}")
     public String visualizarCliente(@PathVariable("id") Long id,
             Model model) {
@@ -92,7 +125,13 @@ public class ClienteController {
         model.addAttribute("cliente", cliente);
         return "cliente/visualizar-cliente";
     }
-    
+
+    @Operation(summary = "Deleta um cliente",
+            description = "Deleta um cliente específico baseado no id",
+            security = @SecurityRequirement(name = "cookieAuth"),
+            method = "POST"
+    )
+    @EndpointProtegido
     @PostMapping("/deletar/{id}")
     public String deletarCliente(@PathVariable("id") Long id) {
         try {
