@@ -105,7 +105,7 @@ public class ClienteController {
     )
     @EndpointProtegido
     @GetMapping("/editar/{id}")
-    public String editarClientes(@PathVariable("id") Long id,
+    public String editarCliente(@PathVariable("id") Long id,
             Model model) {
         Cliente cliente = clienteService.listarCliente(id);
         model.addAttribute("cliente", cliente);

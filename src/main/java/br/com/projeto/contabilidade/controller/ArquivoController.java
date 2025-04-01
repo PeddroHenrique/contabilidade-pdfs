@@ -119,7 +119,6 @@ public class ArquivoController {
                                  Model model,
                                  Principal principal) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
-        System.out.println("CAMINHO DO ARQUIVO: " + arquivo.getCaminhoArquivo());
         model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
         model.addAttribute("arquivo", arquivo);
         return "arquivo/editar-arquivo";
@@ -165,7 +164,7 @@ public class ArquivoController {
     public void visualizarPdf(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
         Path filePath = Paths.get(arquivo.getCaminhoArquivo());
-        
+
         if (Files.exists(filePath)) {
             response.setContentType("application/pdf");
             response.setHeader("Content-Disposition", "inline; filename=\"" + arquivo.getNomeArquivo());
