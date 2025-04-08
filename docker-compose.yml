@@ -17,7 +17,7 @@ services:
             retries: 5
 
     app:
-        build: .
+        image: pedrohens/contabilidade-app:latest
         container_name: contabilidade_pdf_app
         ports:
           - "8080:8080"
