@@ -1,6 +1,6 @@
 # Contabilidade PDFs
 
-[![GitHub License](https://img.shields.io/github/license/PeddroHenrique/economista-pdfs)]() [![GitHub Release](https://img.shields.io/github/v/release/PeddroHenrique/economista-pdfs)]() [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PeddroHenrique/economista-pdfs/tests.yml)]() [![Tests](https://github.com/PeddroHenrique/economista-pdfs/actions/workflows/tests.yml/badge.svg)]()
+[![GitHub License](https://img.shields.io/github/license/PeddroHenrique/contabilidade-pdfs)]() [![GitHub Release](https://img.shields.io/github/v/release/PeddroHenrique/contabilidade-pdfs)]() [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PeddroHenrique/contabilidade-pdfs/tests.yml)]() [![Tests](https://github.com/PeddroHenrique/contabilidade-pdfs/actions/workflows/tests.yml/badge.svg)]()
 
 **Atividade desenvolvida para atender a necessidade de uma economista. Realiza a criação, listagem, edição e remoção de clientes e seus respectivos arquivos (PDFs). Cada usuário criado tem sua própria lista de clientes e arquivos relacionados.**
 
