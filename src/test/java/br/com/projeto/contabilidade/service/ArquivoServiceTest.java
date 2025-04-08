@@ -4,6 +4,7 @@ import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.model.Cliente;
 import br.com.projeto.contabilidade.model.User;
 import br.com.projeto.contabilidade.repository.ArquivoRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,9 +43,10 @@ class ArquivoServiceTest {
     private Cliente cliente;
     private Arquivo arquivo;
     private MultipartFile mockMultipartFile;
+    private Path tempUploadDir;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         user = new User();
         user.setUsername("Usuario Test");
 
@@ -54,20 +54,40 @@ class ArquivoServiceTest {
         cliente.setNome("Cliente Test");
         cliente.setUser(user);
 
+        // Cria um diretório temporário exclusivo para cada teste
+        tempUploadDir = Files.createTempDirectory("test-uploads-");
+
+        // define o diretorio no arquivo service
+        ReflectionTestUtils.setField(arquivoService, "uploadDir", tempUploadDir.toString());
+
         // É necessário o caminho do arquivo para que os testes de salvamento funcionem
         arquivo = new Arquivo();
         arquivo.setId(1L);
         arquivo.setNomeArquivo("documento.pdf");
-        arquivo.setCaminhoArquivo("\\uploads\\documento.pdf");
+        arquivo.setCaminhoArquivo(tempUploadDir.resolve("documento.pdf").toString());
         arquivo.setCliente(cliente);
 
         // Cria o mock de um MultipartFile
         mockMultipartFile = new MockMultipartFile(
                 "file", "documento.pdf", "application/pdf", "conteudo do arquivo".getBytes()
         );
+    }
 
-        // Cria o diretório /uploads
-        ReflectionTestUtils.setField(arquivoService, "uploadDir", "/uploads");
+    @AfterEach
+    void tearDown() throws IOException {
+        try {
+            Files.walk(tempUploadDir)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (IOException e) {
+                            System.err.println("Falha ao deletar arquivo temporario" + path);
+                        }
+                    });
+        } catch (IOException e) {
+            System.err.println("Warning: Falha durante limpeza do diretório temporário");
+        }
     }
 
     @Test
@@ -141,7 +161,12 @@ class ArquivoServiceTest {
     void salvarArquivo_comSucesso() throws IOException {
         arquivo.setId(null);
 
-        when(arquivoRepository.save(arquivo)).thenReturn(arquivo);
+        // simula a geração de ID
+        when(arquivoRepository.save(arquivo)).thenAnswer(invocation -> {
+            Arquivo saved = invocation.getArgument(0);
+            saved.setId(1L);
+            return saved;
+        });
 
         arquivoService.salvarArquivo(mockMultipartFile, arquivo);
 
@@ -153,28 +178,35 @@ class ArquivoServiceTest {
     @Test
     @DisplayName("Should update an existing file")
     void salvarArquivo_atualizarArquivoExistente() throws IOException{
+        Path existingFilePath = tempUploadDir.resolve("documento_antigo.pdf");
+        Files.createDirectories(existingFilePath.getParent());
+        Files.write(existingFilePath, "Conteudo antigo".getBytes());
+
+        Arquivo arquivoExistente = new Arquivo();
+        arquivoExistente.setId(1L);
+        arquivoExistente.setCaminhoArquivo(existingFilePath.toString());
+
         // arrange
-        when(arquivoRepository.findById(arquivo.getId())).thenReturn(Optional.of(arquivo));
-        when(arquivoRepository.save(arquivo)).thenReturn(arquivo);
+        when(arquivoRepository.findById(1L)).thenReturn(Optional.of(arquivoExistente));
+        when(arquivoRepository.save(any(Arquivo.class))).thenReturn(arquivoExistente);
 
         // act
-        arquivoService.salvarArquivo(mockMultipartFile, arquivo);
+        arquivoService.salvarArquivo(mockMultipartFile, arquivoExistente);
 
         // assert
-        verify(arquivoRepository).save(arquivo);
-        verify(arquivoRepository).findById(arquivo.getId());
-        assertThat(arquivo.getNomeArquivo()).isEqualTo("documento.pdf");
-        assertThat(arquivo.getCaminhoArquivo()).isNotNull();
-        assertThat(arquivo.getCaminhoArquivo()).isNotEqualTo("\\uploads\\documento.pdf");
+        verify(arquivoRepository).save(arquivoExistente);
+        verify(arquivoRepository).findById(arquivoExistente.getId());
+        assertThat(arquivoExistente.getNomeArquivo()).isEqualTo("documento.pdf");
+        assertThat(arquivoExistente.getCaminhoArquivo()).isNotNull();
+        assertThat(Files.exists(existingFilePath)).isFalse();
+        assertThat(Files.exists(Paths.get(arquivoExistente.getCaminhoArquivo()))).isTrue();
     }
 
     @Test
     @DisplayName("Should throw exception when file is empty")
     void salvarArquivo_arquivoVazio() {
         // arrange
-        mockMultipartFile = new MockMultipartFile(
-                "file", "", "application/pdf", new byte[0]
-        );
+        mockMultipartFile = null;
         arquivo.setId(null);
 
         // act and assert
