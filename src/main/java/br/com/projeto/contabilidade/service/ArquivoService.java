@@ -57,7 +57,7 @@ public class ArquivoService {
             Files.createDirectories(uploadPath);
         }
 
-        if (file == null || arquivo.getId() == null && file.isEmpty()) {
+        if (file == null && arquivo.getId() == null) {
             throw new RuntimeException("Arquivo não pode ser nulo ou vazio");
         }
 
