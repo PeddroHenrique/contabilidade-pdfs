@@ -1,4 +1,4 @@
-name: Java CI with Maven (H2)
+name: java CI
 
 on: [push, pull_request]  # Dispara em pushes e pull requests
 
