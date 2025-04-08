@@ -11,8 +11,6 @@
 - [Instalação](#🚀-instalação)
 - [Uso](#💻-uso)
 - [Tecnologias](#🛠️-tecnologias)
-- [Contribuição](#🤝-contribuição)
-- [Licença](#📄-licença)
 
 ## ✨ Funcionalidades
 
