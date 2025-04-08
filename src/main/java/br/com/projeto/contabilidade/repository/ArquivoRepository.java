@@ -21,9 +21,9 @@ import java.util.List;
 @Repository
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long>{
     Page<Arquivo> findAllByOrderByDataCriacaoDesc(Pageable pageable);
-    @Query("SELECT a FROM Arquivo a WHERE a.cliente.user.username = :username ORDER BY a.dataCriacao DESC")
+    @Query("SELECT a FROM Arquivo a WHERE a.cliente.user.username = :username ORDER BY a.id DESC")
     Page<Arquivo> findArquivosByClienteUsuario(@Param("username") String username, Pageable pageable);
-    @Query("SELECT a FROM Arquivo a WHERE a.cliente.nome = :nome AND a.cliente.user.username = :username ORDER BY a.dataCriacao DESC")
+    @Query("SELECT a FROM Arquivo a WHERE a.cliente.nome = :nome AND a.cliente.user.username = :username ORDER BY a.id DESC")
     Page<Arquivo> findArquivosByClienteNomeAndUsuario(@Param("nome") String nome, @Param("username") String username, Pageable pageable);
     List<Arquivo> findAllByClienteId(Long id);
 }
