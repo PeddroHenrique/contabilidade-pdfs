@@ -1,6 +1,6 @@
 name: java CI
 
-on: [push, pull_request]  # Dispara em pushes e pull requests
+on: [push, pull_request]
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'maven'  # Cacheia as dependências do Maven
+          cache: 'maven'
 
       - name: Run tests with H2
         run: mvn clean test
