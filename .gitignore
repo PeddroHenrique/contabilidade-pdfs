@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Dados locais da aplicação ###
+uploads/
+dados-dev/
