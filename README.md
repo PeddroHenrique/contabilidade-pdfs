@@ -18,30 +18,39 @@
 - Listagem dos arquivos: é capaz de listar todos os arquivos relacionado a um usuário ou a um determinado cliente.
 - Paginação: reduz o consumo de recursos e melhora o desempenho.
 - Authenticação: realiza o salvamento de usuários no banco de dados, utilizando boas práticas de encriptação.
-- Banco de dados: todas as operações realizadas são persistidas no banco de dados.
-- Docker: projeto capaz de rodar em containers docker.
+- Banco de dados: todas as operações são persistidas em um banco H2 embutido, sem precisar instalar um servidor de banco.
 
 ## 📦 Pré-requisitos
 
-- Docker -> https://www.docker.com/
+- Java 21 (JDK) -> https://adoptium.net/
 
-## 🚀 Instalação
+## 🚀 Executando em desenvolvimento
 
+```bash
+git clone https://github.com/PeddroHenrique/contabilidade-pdfs.git
+cd contabilidade-pdfs
+./mvnw spring-boot:run
 ```
-git pull https://github.com/PeddroHenrique/economista-pdfs
-docker-compose up -d
+
+O comando acima ativa o perfil `dev`: o banco e os PDFs ficam na pasta `dados-dev/` do projeto.
+
+Para rodar os testes:
+
+```bash
+./mvnw verify
 ```
 
 ## 💻 Uso
 
-Após subir os containers docker, basta acessar http://localhost:8080/api/login
+Com a aplicação rodando, acesse http://localhost:8080/api/login
+
+Fora do perfil `dev`, os dados ficam em `%LOCALAPPDATA%\ContabilidadePDFs` (Windows) ou em `~/ContabilidadePDFs` (outros sistemas).
 
 ## 🛠️ Tecnologias
 
-- java 17, Spring Boot MVC, Spring Security, Spring JPA;
+- Java 21, Spring Boot 4 (MVC), Spring Security, Spring Data JPA;
 - Thymeleaf, HTML e Bootstrap;
-- PostgreSQL e Flyway;
+- H2 (modo arquivo) e Flyway;
 - JUnit e Mockito;
-- Git e Github;
-- Docker;
+- Git, GitHub e GitHub Actions;
 - Swagger.
