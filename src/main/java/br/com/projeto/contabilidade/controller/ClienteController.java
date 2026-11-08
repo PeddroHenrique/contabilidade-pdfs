@@ -7,7 +7,6 @@ package br.com.projeto.contabilidade.controller;
 import br.com.projeto.contabilidade.config.annotation.EndpointProtegido;
 import br.com.projeto.contabilidade.model.Cliente;
 import br.com.projeto.contabilidade.service.ClienteService;
-import br.com.projeto.contabilidade.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,9 +38,6 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    @Autowired
-    private UserService userService;
-
     @Operation(summary = "Lista os clientes",
             description = "Exibe a página com todos os clientes do usuário na sessão.",
             security = @SecurityRequirement(name = "cookieAuth"),
@@ -50,11 +46,10 @@ public class ClienteController {
     @GetMapping
     public String listarClientes(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Principal principal,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Cliente> clientesPage = clienteService.listarClientesPaginacao(principal.getName(), pageable);
+        Page<Cliente> clientesPage = clienteService.listarClientesPaginacao(pageable);
 
         model.addAttribute("clientes", clientesPage.getContent());
         model.addAttribute("totalPages", clientesPage.getTotalPages());
@@ -82,12 +77,7 @@ public class ClienteController {
     )
     @EndpointProtegido
     @PostMapping("salvar")
-    public String salvarClientes(@ModelAttribute("cliente") Cliente cliente,
-                                 Principal principal) {
-        if (cliente.getUser() == null) {
-            cliente.setUser(userService.listarPorUsername(principal.getName()));
-        }
-
+    public String salvarClientes(@ModelAttribute("cliente") Cliente cliente) {
         if (cliente.getId() != null) {
             Cliente clienteExistente = clienteService.listarCliente(cliente.getId());
             clienteExistente.setNome(cliente.getNome());
