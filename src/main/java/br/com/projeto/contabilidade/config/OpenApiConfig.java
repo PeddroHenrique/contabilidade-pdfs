@@ -10,26 +10,6 @@ import io.swagger.v3.oas.models.tags.Tag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@OpenAPIDefinition(
-//        info = @Info(
-//                title = "OpenApi Specification - Gerenciador de PDFs",
-//                description = "Saves PDFs for each client",
-//                contact = @Contact(
-//                        name = "Pedro Henrique Brandão Santos"
-//                ),
-//                version = "1.0"
-//        ),
-//        servers = @Server(
-//                description = "Local ENV",
-//                url = "http://localhost:8080"
-//        )
-//)
-//@SecurityScheme(
-//        name = "BasicAuth",
-//        description = "Basic authentication method",
-//        scheme = "Basic",
-//        type = SecuritySchemeType.HTTP
-//)
 @Configuration
 public class OpenApiConfig {
 
@@ -52,14 +32,6 @@ public class OpenApiConfig {
                                         .type(SecurityScheme.Type.APIKEY)
                                         .in(SecurityScheme.In.COOKIE)
                                         .scheme("jsessionid")))
-                .addTagsItem(new Tag().name("Autenticação").description("Endpoints de login e registro"));
-                // usar quando -> Login por usuário em memória
-//                .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
-//                .components(new Components()
-//                        .addSecuritySchemes("basicAuth",
-//                                new SecurityScheme()
-//                                        .name("basicAuth")
-//                                        .type(SecurityScheme.Type.HTTP)
-//                                        .scheme("basic")));
+                .addTagsItem(new Tag().name("Autenticação").description("Endpoint de login"));
     }
 }
