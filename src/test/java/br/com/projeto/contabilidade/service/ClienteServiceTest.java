@@ -2,7 +2,6 @@ package br.com.projeto.contabilidade.service;
 
 import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.model.Cliente;
-import br.com.projeto.contabilidade.model.User;
 import br.com.projeto.contabilidade.repository.ArquivoRepository;
 import br.com.projeto.contabilidade.repository.ClienteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -42,17 +38,13 @@ class ClienteServiceTest {
     @InjectMocks
     private ClienteService clienteService;
 
-    private User user;
     private Cliente cliente;
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setUsername("Usuario Test");
 
         cliente = new Cliente();
         cliente.setId(1L);
-        cliente.setUser(user);
         cliente.setNome("Cliente Test");
     }
 
@@ -60,16 +52,16 @@ class ClienteServiceTest {
     @DisplayName("Should return all the Clients")
     void listarClientes() {
         // arrange
-        when(clienteRepository.findAllByUserUsername(user.getUsername())).thenReturn(Collections.singletonList(cliente));
+        when(clienteRepository.findAll(Sort.by("nome"))).thenReturn(Collections.singletonList(cliente));
 
         //act
-        List<Cliente> resultado = clienteService.listarClientes(user.getUsername());
+        List<Cliente> resultado = clienteService.listarClientes();
 
         //assert
         assertThat(resultado).isNotNull();
         assertThat(resultado).hasSize(1);
         assertThat(resultado.get(0).getNome()).isEqualTo("Cliente Test");
-        verify(clienteRepository, times(1)).findAllByUserUsername(user.getUsername());
+        verify(clienteRepository, times(1)).findAll(Sort.by("nome"));
     }
 
     @Test
@@ -78,17 +70,17 @@ class ClienteServiceTest {
         // arrange
         Pageable pageable = PageRequest.of(0, 10);
         Page<Cliente> paginaCliente = new PageImpl<>(Collections.singletonList(cliente));
-        when(clienteRepository.findAllByUserUsername(user.getUsername(), pageable))
+        when(clienteRepository.findAll(pageable))
                 .thenReturn(paginaCliente);
 
         // act
-        Page<Cliente> resultado = clienteService.listarClientesPaginacao(user.getUsername(), pageable);
+        Page<Cliente> resultado = clienteService.listarClientesPaginacao(pageable);
 
         // assert
         assertThat(resultado).isNotNull();
         assertThat(resultado.getContent()).hasSize(1);
         assertThat(resultado.getContent().get(0).getNome()).isEqualTo("Cliente Test");
-        verify(clienteRepository, times(1)).findAllByUserUsername(user.getUsername(), pageable);
+        verify(clienteRepository, times(1)).findAll(pageable);
     }
 
     @Test
