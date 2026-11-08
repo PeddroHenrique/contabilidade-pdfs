@@ -8,8 +8,6 @@ import br.com.projeto.contabilidade.model.Arquivo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,10 +18,7 @@ import java.util.List;
  */
 @Repository
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long>{
-    Page<Arquivo> findAllByOrderByDataCriacaoDesc(Pageable pageable);
-    @Query("SELECT a FROM Arquivo a WHERE a.cliente.user.username = :username ORDER BY a.id DESC")
-    Page<Arquivo> findArquivosByClienteUsuario(@Param("username") String username, Pageable pageable);
-    @Query("SELECT a FROM Arquivo a WHERE a.cliente.nome = :nome AND a.cliente.user.username = :username ORDER BY a.id DESC")
-    Page<Arquivo> findArquivosByClienteNomeAndUsuario(@Param("nome") String nome, @Param("username") String username, Pageable pageable);
+    Page<Arquivo> findAllByOrderByIdDesc(Pageable pageable);
+    Page<Arquivo> findByClienteNomeOrderByIdDesc(String nome, Pageable pageable);
     List<Arquivo> findAllByClienteId(Long id);
 }
