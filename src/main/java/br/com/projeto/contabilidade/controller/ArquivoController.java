@@ -58,16 +58,15 @@ public class ArquivoController {
     public String listarArquivos(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
-            Principal principal,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Arquivo> arquivosPage;
 
         if (!StringUtils.isEmptyOrWhitespace(search)) {
-            arquivosPage = arquivoService.listarArquivosPorNomeCliente(search, principal.getName(), pageable);
+            arquivosPage = arquivoService.listarArquivosPorNomeCliente(search, pageable);
         } else {
-            arquivosPage = arquivoService.listarArquivosPaginacao(principal.getName(), pageable);
+            arquivosPage = arquivoService.listarArquivosPaginacao(pageable);
         }
 
         model.addAttribute("arquivos", arquivosPage.getContent());
@@ -86,8 +85,8 @@ public class ArquivoController {
     )
     @EndpointProtegido
     @GetMapping("/formulario")
-    public String formularioArquivos(Arquivo arquivo, Model model, Principal principal) {
-        model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
+    public String formularioArquivos(Arquivo arquivo, Model model) {
+        model.addAttribute("clientes", clienteService.listarClientes());
         return "arquivo/formulario-arquivo";
     }
 
@@ -116,10 +115,9 @@ public class ArquivoController {
     )
     @GetMapping("/editar/{id}")
     public String editarArquivos(@PathVariable("id") Long id,
-                                 Model model,
-                                 Principal principal) {
+                                 Model model) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
-        model.addAttribute("clientes", clienteService.listarClientes(principal.getName()));
+        model.addAttribute("clientes", clienteService.listarClientes());
         model.addAttribute("arquivo", arquivo);
         return "arquivo/editar-arquivo";
     }

@@ -2,7 +2,6 @@ package br.com.projeto.contabilidade.repository;
 
 import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.model.Cliente;
-import br.com.projeto.contabilidade.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +41,14 @@ class ArquivoRepositoryTest {
     @BeforeEach
     void setUp() {
 
-        User user = criarUsuarioTest();
         LocalDateTime now = LocalDateTime.now();
 
         Cliente cliente1 = new Cliente();
         cliente1.setNome("Cliente1");
-        cliente1.setUser(user);
         entityManager.persist(cliente1);
 
         Cliente cliente2 = new Cliente();
         cliente2.setNome("Cliente2");
-        cliente2.setUser(user);
         entityManager.persist(cliente2);
 
         Arquivo arquivo1 = new Arquivo();
@@ -82,82 +78,37 @@ class ArquivoRepositoryTest {
         entityManager.flush();
     }
 
-    private User criarUsuarioTest() {
-        User user = new User();
-        user.setUsername("Usuario Test");
-        user.setPassword("Usuario123");
-        user.setRole("USER");
-        user.setEnabled(true);
-        entityManager.persist(user);
-
-        return user;
-    }
-
     @Test
-    void findArquivosByClienteUsuario_deveRetornarArquivosDoUsuario() {
+    void findAllByOrderIdDesc_deveRetornarTodosOsArquivosDoMaisNovoParaOMaisAntigo() {
         // arrange
-        String username = "Usuario Test";
         Pageable pageable = PageRequest.of(0, 10);
 
         // act
-        Page<Arquivo> resultado = arquivoRepository.findArquivosByClienteUsuario(username, pageable);
+        Page<Arquivo> resultado = arquivoRepository.findAllByOrderByIdDesc(pageable);
 
         // assert
-        assertThat(resultado).isNotNull();
-        assertThat(resultado.getContent()).hasSize(4);
         assertThat(resultado.getContent())
                 .extracting(Arquivo::getNomeArquivo)
                 .containsExactly("documento4.pdf", "documento3.pdf", "documento2.pdf", "documento1.pdf");
     }
 
     @Test
-    void findArquivosByClienteUsuario_comUsuarioInexistente_deveRetornarPaginaVazia() {
-        String username = "Usuario Test Inexistente";
+    void findByClienteNomeByOrderIdDesc_deveRetornarApenasArquivosDoCliente() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        Page<Arquivo> resultado = arquivoRepository.findArquivosByClienteUsuario(username, pageable);
+        Page<Arquivo> resultado = arquivoRepository.findByClienteNomeOrderByIdDesc("Cliente1", pageable);
 
-        assertThat(resultado).isNotNull();
-        assertThat(resultado.getContent()).isEmpty();
-    }
-
-    @Test
-    void findArquivoByClienteNomeAndUsuario_deveRetornarArquivosFiltradosPorNomeEUsuario() {
-        String username = "Usuario Test";
-        String cliente = "Cliente1";
-        Pageable pageable = PageRequest.of(0, 10);
-
-        Page<Arquivo> resultado = arquivoRepository.findArquivosByClienteNomeAndUsuario(cliente, username, pageable);
-
-        assertThat(resultado.getContent()).isNotNull();
-        assertThat(resultado.getContent()).isNotEmpty();
-        assertThat(resultado.getContent()).hasSize(2);
         assertThat(resultado.getContent())
                 .extracting(Arquivo::getNomeArquivo)
                 .containsExactly("documento2.pdf", "documento1.pdf");
     }
 
     @Test
-    void findArquivoByClienteNomeAndUsuario_comClienteInexistente_deveRetonarPaginaVazia() {
-        String username = "Usuario Test";
-        String cliente = "Cliente Inexistente";
+    void findByClienteNomeOrderByIdDesc_comClienteInexistente_deveRetornarPaginaVazia() {
         Pageable pageable = PageRequest.of(0, 10);
 
-        Page<Arquivo> resultado = arquivoRepository.findArquivosByClienteNomeAndUsuario(cliente, username, pageable);
+        Page<Arquivo> resultado = arquivoRepository.findByClienteNomeOrderByIdDesc("Cliente Inexistente", pageable);
 
-        assertThat(resultado.getContent()).isNotNull();
-        assertThat(resultado.getContent()).isEmpty();
-    }
-
-    @Test
-    void findArquivoByClienteNomeAndUsuario_comUsuarioInexistente_deveRetornarPaginaVazia() {
-        String username = "Usuario Test Inexistente";
-        String cliente = "Cliente1";
-        Pageable pageable = PageRequest.of(0, 10);
-
-        Page<Arquivo> resultado = arquivoRepository.findArquivosByClienteNomeAndUsuario(cliente, username, pageable);
-
-        assertThat(resultado.getContent()).isNotNull();
         assertThat(resultado.getContent()).isEmpty();
     }
 }

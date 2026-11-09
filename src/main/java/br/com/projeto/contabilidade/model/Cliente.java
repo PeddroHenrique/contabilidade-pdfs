@@ -21,10 +21,6 @@ public class Cliente {
     
     @Column(columnDefinition = "varchar(255)")
     private String nome;
-
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private User user;
     
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Arquivo> arquivos;
@@ -43,14 +39,6 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public List<Arquivo> getArquivos() {

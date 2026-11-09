@@ -1,9 +1,7 @@
 package br.com.projeto.contabilidade.controller;
 
 import br.com.projeto.contabilidade.model.Cliente;
-import br.com.projeto.contabilidade.model.User;
 import br.com.projeto.contabilidade.service.ClienteService;
-import br.com.projeto.contabilidade.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,32 +29,21 @@ class ClienteControllerTest {
     private ClienteService clienteService;
 
     @Mock
-    private UserService userService;
-
-    @Mock
     private Model model;
-
-    @Mock
-    private Principal principal;
 
     @InjectMocks
     private ClienteController clienteController;
 
     private Cliente cliente;
-    private User user;
     private List<Cliente> clientes;
     private Page<Cliente> clientesPage;
 
     @BeforeEach
     void setUp(){
-        user = new User();
-        user.setId(1L);
-        user.setUsername("Usuario");
 
         cliente = new Cliente();
         cliente.setId(1L);
         cliente.setNome("Cliente");
-        cliente.setUser(user);
 
         clientes = Arrays.asList(cliente);
         clientesPage = new PageImpl<>(clientes);
@@ -67,13 +53,12 @@ class ClienteControllerTest {
     @DisplayName("Should return the correct view for listarClientes")
     void listarClientes() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(clienteService.listarClientesPaginacao(anyString(), any(Pageable.class))).thenReturn(clientesPage);
-        when(principal.getName()).thenReturn("Usuario");
+        when(clienteService.listarClientesPaginacao(any(Pageable.class))).thenReturn(clientesPage);
 
-        String viewName = clienteController.listarClientes(0, 10, principal, model);
+        String viewName = clienteController.listarClientes(0, 10, model);
 
         assertThat(viewName).isEqualTo("cliente/listar-cliente");
-        verify(clienteService).listarClientesPaginacao("Usuario", pageable);
+        verify(clienteService).listarClientesPaginacao(pageable);
         verify(model).addAttribute("clientes", clientes);
         verify(model).addAttribute("totalPages", clientesPage.getTotalPages());
         verify(model).addAttribute("totalItems", clientesPage.getTotalElements());
@@ -94,16 +79,11 @@ class ClienteControllerTest {
     void salvarClientes_comClienteNovo() {
         Cliente novoCliente = new Cliente();
         novoCliente.setNome("Novo Cliente");
-
-        when(userService.listarPorUsername(anyString())).thenReturn(user);
-        when(principal.getName()).thenReturn("Usuario");
         when(clienteService.salvarCliente(any(Cliente.class))).thenReturn(novoCliente);
 
-        String viewName = clienteController.salvarClientes(novoCliente, principal);
+        String viewName = clienteController.salvarClientes(novoCliente);
 
         assertThat(viewName).isEqualTo("redirect:/api/cliente");
-        verify(userService).listarPorUsername("Usuario");
-        verify(principal).getName();
         verify(clienteService).salvarCliente(novoCliente);
     }
 
@@ -113,7 +93,7 @@ class ClienteControllerTest {
         when(clienteService.listarCliente(anyLong())).thenReturn(cliente);
         when(clienteService.salvarCliente(any(Cliente.class))).thenReturn(cliente);
 
-        String viewName = clienteController.salvarClientes(cliente, principal);
+        String viewName = clienteController.salvarClientes(cliente);
 
         assertThat(viewName).isEqualTo("redirect:/api/cliente");
         verify(clienteService).listarCliente(1L);

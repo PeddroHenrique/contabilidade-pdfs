@@ -18,6 +18,4 @@ import java.util.List;
  */
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long>{
-    Page<Cliente> findAllByUserUsername(String username, Pageable pageable);
-    List<Cliente> findAllByUserUsername(String username);
 }

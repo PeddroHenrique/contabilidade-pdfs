@@ -16,6 +16,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,13 +32,12 @@ public class ClienteService {
     @Autowired
     private ArquivoRepository arquivoRepository;
 
-    public List<Cliente> listarClientes(String nome) {
-        return clienteRepository.findAllByUserUsername(nome);
+    public List<Cliente> listarClientes() {
+        return clienteRepository.findAll(Sort.by("nome"));
     }
 
-    public Page<Cliente> listarClientesPaginacao(String nome,
-                                                 Pageable pageable) {
-        return clienteRepository.findAllByUserUsername(nome , pageable);
+    public Page<Cliente> listarClientesPaginacao(Pageable pageable) {
+        return clienteRepository.findAll(pageable);
     }
 
     public Cliente listarCliente(Long id) {

@@ -2,7 +2,6 @@ package br.com.projeto.contabilidade.controller;
 
 import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.model.Cliente;
-import br.com.projeto.contabilidade.model.User;
 import br.com.projeto.contabilidade.service.ArquivoService;
 import br.com.projeto.contabilidade.service.ClienteService;
 import jakarta.servlet.ServletOutputStream;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,9 +41,6 @@ class ArquivoControllerTest {
     private ClienteService clienteService;
 
     @Mock
-    private Principal principal;
-
-    @Mock
     private Model model;
 
     @Mock
@@ -60,7 +55,6 @@ class ArquivoControllerTest {
     @InjectMocks
     private ArquivoController arquivoController;
 
-    private User user;
     private Cliente cliente;
     private List<Cliente> clientes;
     private Arquivo arquivo;
@@ -69,8 +63,6 @@ class ArquivoControllerTest {
 
     @BeforeEach
     void setUp() {
-        user = new User();
-        user.setUsername("Usuario");
 
         cliente = new Cliente();
         cliente.setId(1L);
@@ -91,14 +83,12 @@ class ArquivoControllerTest {
     @DisplayName("Should return the correct view for listarArquivos with all arquivos")
     void listarArquivos_semSearch() {
         Pageable pageable = PageRequest.of(0, 10);
-        when(arquivoService.listarArquivosPaginacao(anyString(), any(Pageable.class))).thenReturn(arquivosPage);
-        when(principal.getName()).thenReturn("Usuario");
+        when(arquivoService.listarArquivosPaginacao(any(Pageable.class))).thenReturn(arquivosPage);
 
-        String viewName = arquivoController.listarArquivos(0, 10, null, principal, model);
+        String viewName = arquivoController.listarArquivos(0, 10, null, model);
 
         assertThat(viewName).isEqualTo("arquivo/listar-arquivo");
-        verify(arquivoService).listarArquivosPaginacao("Usuario", pageable);
-        verify(principal).getName();
+        verify(arquivoService).listarArquivosPaginacao(pageable);
         verify(model).addAttribute("arquivos", arquivos);
         verify(model).addAttribute("totalPages", arquivosPage.getTotalPages());
         verify(model).addAttribute("totalItems", arquivosPage.getTotalElements());
@@ -112,15 +102,13 @@ class ArquivoControllerTest {
     void listarArquivos_comSearch() {
         String search = "teste";
         Pageable pageable = PageRequest.of(0, 10);
-        when(arquivoService.listarArquivosPorNomeCliente(anyString(), anyString(), any(Pageable.class)))
+        when(arquivoService.listarArquivosPorNomeCliente(anyString(), any(Pageable.class)))
                 .thenReturn(arquivosPage);
-        when(principal.getName()).thenReturn("Usuario");
 
-        String viewName = arquivoController.listarArquivos(0, 10, search, principal, model);
+        String viewName = arquivoController.listarArquivos(0, 10, search, model);
 
         assertThat(viewName).isEqualTo("arquivo/listar-arquivo");
-        verify(arquivoService).listarArquivosPorNomeCliente(search, "Usuario", pageable);
-        verify(principal).getName();
+        verify(arquivoService).listarArquivosPorNomeCliente(search, pageable);
         verify(model).addAttribute("arquivos", arquivos);
         verify(model).addAttribute("totalPages", arquivosPage.getTotalPages());
         verify(model).addAttribute("totalItems", arquivosPage.getTotalElements());
@@ -132,14 +120,11 @@ class ArquivoControllerTest {
     @Test
     @DisplayName("Should return the correct page for formularioArquivos")
     void formularioArquivos() {
-        when(clienteService.listarClientes(anyString())).thenReturn(clientes);
-        when(principal.getName()).thenReturn("Usuario");
+        when(clienteService.listarClientes()).thenReturn(clientes);
 
-        String viewName = arquivoController.formularioArquivos(new Arquivo(), model, principal);
+        String viewName = arquivoController.formularioArquivos(new Arquivo(), model);
 
         assertThat(viewName).isEqualTo("arquivo/formulario-arquivo");
-        verify(clienteService).listarClientes("Usuario");
-        verify(principal).getName();
         verify(model).addAttribute("clientes", clientes);
     }
 
@@ -173,15 +158,12 @@ class ArquivoControllerTest {
     @DisplayName("Should return the correct view for editarArquivos")
     void editarArquivos() {
         when(arquivoService.listarArquivoPorId(anyLong())).thenReturn(arquivo);
-        when(clienteService.listarClientes(anyString())).thenReturn(clientes);
-        when(principal.getName()).thenReturn("Usuario");
+        when(clienteService.listarClientes()).thenReturn(clientes);
 
-        String viewName = arquivoController.editarArquivos(1L, model, principal);
+        String viewName = arquivoController.editarArquivos(1L, model);
 
         assertThat(viewName).isEqualTo("arquivo/editar-arquivo");
         verify(arquivoService).listarArquivoPorId(1L);
-        verify(clienteService).listarClientes("Usuario");
-        verify(principal).getName();
         verify(model).addAttribute("clientes", clientes);
         verify(model).addAttribute("arquivo", arquivo);
     }

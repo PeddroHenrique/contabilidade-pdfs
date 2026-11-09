@@ -23,7 +23,7 @@ class LoginControllerTest {
     @Test
     @DisplayName("Should return the login page without any model")
     void login_semParametro() {
-        String viewName = loginController.login(null, null, null, model);
+        String viewName = loginController.login(null, null, model);
 
         assertThat(viewName).isEqualTo("login");
         verifyNoInteractions(model);
@@ -32,7 +32,7 @@ class LoginControllerTest {
     @Test
     @DisplayName("Should return the login page with error model")
     void login_comErro() {
-        String viewName = loginController.login("true", null, null, model);
+        String viewName = loginController.login("true", null, model);
 
         assertThat(viewName).isEqualTo("login");
         verify(model).addAttribute("error", "Nome do usuário ou senha inválidos!");
@@ -41,18 +41,9 @@ class LoginControllerTest {
     @Test
     @DisplayName("Should return the login page with logout model")
     void login_comLogout() {
-        String viewName = loginController.login(null, "true", null, model);
+        String viewName = loginController.login(null, "true", model);
 
         assertThat(viewName).isEqualTo("login");
         verify(model).addAttribute("message", "Você foi desconectado com sucesso!");
-    }
-
-    @Test
-    @DisplayName("Should return the login page with registered model")
-    void login_comRegistered() {
-        String viewName = loginController.login(null, null, "true", model);
-
-        assertThat(viewName).isEqualTo("login");
-        verify(model).addAttribute("message", "Registro realizado com sucesso! Por favor, faça login.");
     }
 }

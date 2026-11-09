@@ -2,7 +2,6 @@ package br.com.projeto.contabilidade.service;
 
 import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.model.Cliente;
-import br.com.projeto.contabilidade.model.User;
 import br.com.projeto.contabilidade.repository.ArquivoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +37,6 @@ class ArquivoServiceTest {
 
     @InjectMocks
     private ArquivoService arquivoService;
-
-    private User user;
     private Cliente cliente;
     private Arquivo arquivo;
     private MultipartFile mockMultipartFile;
@@ -47,12 +44,9 @@ class ArquivoServiceTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        user = new User();
-        user.setUsername("Usuario Test");
 
         cliente = new Cliente();
         cliente.setNome("Cliente Test");
-        cliente.setUser(user);
 
         // Cria um diretório temporário exclusivo para cada teste
         tempUploadDir = Files.createTempDirectory("test-uploads-");
@@ -132,28 +126,28 @@ class ArquivoServiceTest {
     void listarArquivosPaginacao() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Arquivo> paginaArquivo = new PageImpl<>(Arrays.asList(arquivo));
-        when(arquivoRepository.findArquivosByClienteUsuario("Usuario Test", pageable))
+        when(arquivoRepository.findAllByOrderByIdDesc(pageable))
                 .thenReturn(paginaArquivo);
 
-        Page<Arquivo> resultado = arquivoService.listarArquivosPaginacao("Usuario Test", pageable);
+        Page<Arquivo> resultado = arquivoService.listarArquivosPaginacao(pageable);
 
         assertThat(resultado.getContent()).hasSize(1);
         assertThat(resultado.getContent().get(0).getNomeArquivo()).isEqualTo("documento.pdf");
-        verify(arquivoRepository).findArquivosByClienteUsuario("Usuario Test", pageable);
+        verify(arquivoRepository).findAllByOrderByIdDesc(pageable);
     }
 
     @Test
     void listarArquivosPorNomeCliente() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Arquivo> paginaArquivo = new PageImpl<>(Arrays.asList(arquivo));
-        when(arquivoRepository.findArquivosByClienteNomeAndUsuario("Cliente Test", "Usuario Test", pageable))
+        when(arquivoRepository.findByClienteNomeOrderByIdDesc("Cliente Test", pageable))
                 .thenReturn(paginaArquivo);
 
-        Page<Arquivo> resultado = arquivoService.listarArquivosPorNomeCliente("Cliente Test", "Usuario Test", pageable);
+        Page<Arquivo> resultado = arquivoService.listarArquivosPorNomeCliente("Cliente Test", pageable);
 
         assertThat(resultado.getContent()).hasSize(1);
         assertThat(resultado.getContent().get(0).getNomeArquivo()).isEqualTo("documento.pdf");
-        verify(arquivoRepository).findArquivosByClienteNomeAndUsuario("Cliente Test", "Usuario Test", pageable);
+        verify(arquivoRepository).findByClienteNomeOrderByIdDesc("Cliente Test", pageable);
     }
 
     @Test
