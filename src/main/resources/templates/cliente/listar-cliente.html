@@ -22,7 +22,10 @@
                         <div>
                             <a th:href="@{/api/arquivo}" class="btn btn-primary"><i class="bx bx-list-ul"></i> Listar Arquivos</a>
                             <a th:href="@{/api/cliente/formulario}" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Novo Cliente</a>
-                            <a th:href="@{/api/logout}" class="btn btn-danger"><i class="bx bx-log-out"></i></a>
+                            <form th:action="@{/api/logout}" method="post" class="d-inline"></form>
+                            <button type="submit" class="btn btn-danger" title="Sair">
+                                <i class="bx bx-log-out"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
