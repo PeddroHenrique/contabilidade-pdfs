@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.projeto.contabilidade.controller;
 
 import br.com.projeto.contabilidade.model.Arquivo;
@@ -28,10 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
-/**
- *
- * @author PEDRO
- */
 @Controller
 @RequestMapping("/api/arquivo")
 public class ArquivoController {

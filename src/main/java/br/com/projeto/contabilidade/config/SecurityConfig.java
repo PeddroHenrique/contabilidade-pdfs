@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.projeto.contabilidade.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,10 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-/**
- *
- * @author PEDRO
- */
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(UsuarioProperties.class)
