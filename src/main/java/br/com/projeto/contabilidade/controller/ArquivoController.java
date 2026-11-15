@@ -4,13 +4,9 @@
  */
 package br.com.projeto.contabilidade.controller;
 
-import br.com.projeto.contabilidade.config.annotation.EndpointProtegido;
 import br.com.projeto.contabilidade.model.Arquivo;
 import br.com.projeto.contabilidade.service.ArquivoService;
 import br.com.projeto.contabilidade.service.ClienteService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +34,6 @@ import org.thymeleaf.util.StringUtils;
  *
  * @author PEDRO
  */
-@Tag(name = "CRUD Arquivos", description = "Gerenciamento de arquivos no sistema")
 @Controller
 @RequestMapping("/api/arquivo")
 public class ArquivoController {
@@ -47,12 +44,6 @@ public class ArquivoController {
     @Autowired
     private ClienteService clienteService;
 
-    @Operation(summary = "Lista os arquivos",
-            description = "Exibe a página com todos os arquivos do usuário na sessão",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "GET"
-    )
-    @EndpointProtegido
     @GetMapping()
     public String listarArquivos(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -77,24 +68,12 @@ public class ArquivoController {
         return "arquivo/listar-arquivo";
     }
 
-    @Operation(summary = "Formulário de novos arquivos",
-            description = "Contêm os campos necessários para a criação do arquivo",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "GET"
-    )
-    @EndpointProtegido
     @GetMapping("/formulario")
     public String formularioArquivos(Arquivo arquivo, Model model) {
         model.addAttribute("clientes", clienteService.listarClientes());
         return "arquivo/formulario-arquivo";
     }
 
-    @Operation(summary = "Salva os arquivos",
-            description = "Realiza o salvamento de novos arquivos os dos editados no banco de dados",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "POST"
-    )
-    @EndpointProtegido
     @PostMapping("/salvar")
     public String salvarArquivos(@ModelAttribute("arquivo") Arquivo arquivo,
             @RequestParam("file") MultipartFile file,
@@ -107,11 +86,6 @@ public class ArquivoController {
         return "redirect:/api/arquivo";
     }
 
-    @Operation(summary = "Edita um arquivo",
-            description = "Página onde um arquivo específico pode ser editado baseado no id",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "GET"
-    )
     @GetMapping("/editar/{id}")
     public String editarArquivos(@PathVariable("id") Long id,
                                  Model model) {
@@ -121,12 +95,6 @@ public class ArquivoController {
         return "arquivo/editar-arquivo";
     }
 
-    @Operation(summary = "Visualiza um arquivo",
-            description = "Página onde um arquivo específico é visualizado baseado no id",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "GET"
-    )
-    @EndpointProtegido
     @GetMapping("/visualizar/{id}")
     public String visualizarArquivos(@PathVariable("id") Long id,
             Model model) {
@@ -135,11 +103,6 @@ public class ArquivoController {
         return "arquivo/visualizar-arquivo";
     }
 
-    @Operation(summary = "Deleta um arquivo",
-            description = "Deleta um arquivo específico baseado no id",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "POST"
-    )
     @PostMapping("/deletar/{id}")
     public String deletarArquivos(@PathVariable("id") Long id,
             Model model) {
@@ -151,12 +114,6 @@ public class ArquivoController {
         return "redirect:/api/arquivo";
     }
 
-    @Operation(summary = "Visualiza o pdf do arquivo",
-            description = "Abre uma nova aba no navegador mostrando todo o PDF",
-            security = @SecurityRequirement(name = "cookieAuth"),
-            method = "GET"
-    )
-    @EndpointProtegido
     @GetMapping("vizualizar-pdf/{id}")
     public void visualizarPdf(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);

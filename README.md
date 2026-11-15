@@ -52,5 +52,4 @@ Fora do perfil `dev`, os dados ficam em `%LOCALAPPDATA%\ContabilidadePDFs` (Wind
 - Thymeleaf, HTML e Bootstrap;
 - H2 (modo arquivo) e Flyway;
 - JUnit e Mockito;
-- Git, GitHub e GitHub Actions;
-- Swagger.
+- Git, GitHub e GitHub Actions.
