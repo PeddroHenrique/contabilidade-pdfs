@@ -6,7 +6,6 @@ package br.com.projeto.contabilidade.controller;
 
 import br.com.projeto.contabilidade.model.Cliente;
 import br.com.projeto.contabilidade.service.ClienteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -29,9 +28,14 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/api/cliente")
 public class ClienteController {
-    
-    @Autowired
-    private ClienteService clienteService;
+
+    private static final Logger log = LoggerFactory.getLogger(ClienteController.class);
+
+    private final ClienteService clienteService;
+
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     @GetMapping
     public String listarClientes(@RequestParam(defaultValue = "0") int page,
@@ -87,7 +91,7 @@ public class ClienteController {
         try {
             clienteService.deletarCliente(id);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.error("Erro ao excluir os arquivos do cliente de id {}", id, e);
         }
         return "redirect:/api/cliente";
     }

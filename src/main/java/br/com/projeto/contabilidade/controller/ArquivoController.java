@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -38,11 +36,15 @@ import org.thymeleaf.util.StringUtils;
 @RequestMapping("/api/arquivo")
 public class ArquivoController {
 
-    @Autowired
-    private ArquivoService arquivoService;
+    private static final Logger log = LoggerFactory.getLogger(ArquivoController.class);
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ArquivoService arquivoService;
+    private final ClienteService clienteService;
+
+    public ArquivoController(ArquivoService arquivoService, ClienteService clienteService) {
+        this.arquivoService = arquivoService;
+        this.clienteService = clienteService;
+    }
 
     @GetMapping()
     public String listarArquivos(@RequestParam(defaultValue = "0") int page,
@@ -81,7 +83,7 @@ public class ArquivoController {
         try {
             arquivoService.salvarArquivo(file, arquivo);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.error("Erro ao salvar o arquivo {}", file.getOriginalFilename(), e);
         }
         return "redirect:/api/arquivo";
     }
@@ -109,7 +111,7 @@ public class ArquivoController {
         try {
             arquivoService.deletarArquivo(id);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            log.error("Erro ao excluir o arquivo de id {}", id, e);
         }
         return "redirect:/api/arquivo";
     }

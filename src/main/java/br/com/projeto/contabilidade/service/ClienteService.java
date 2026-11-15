@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,11 +25,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class ClienteService {
 
-    @Autowired
-    private ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
 
-    @Autowired
-    private ArquivoRepository arquivoRepository;
+    private final ArquivoRepository arquivoRepository;
+
+    public ClienteService(ClienteRepository clienteRepository, ArquivoRepository arquivoRepository) {
+        this.clienteRepository = clienteRepository;
+        this.arquivoRepository = arquivoRepository;
+    }
 
     public List<Cliente> listarClientes() {
         return clienteRepository.findAll(Sort.by("nome"));
