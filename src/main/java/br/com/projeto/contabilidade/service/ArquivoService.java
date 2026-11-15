@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.projeto.contabilidade.service;
 
 import br.com.projeto.contabilidade.model.Arquivo;
@@ -12,25 +8,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.NoSuchElementException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- *
- * @author PEDRO
- */
 @Service
 public class ArquivoService {
 
-    @Value("${app.upload-dir}")
-    private String uploadDir;
+    private final String uploadDir;
 
-    @Autowired
-    private ArquivoRepository arquivoRepository;
+    private final ArquivoRepository arquivoRepository;
+
+    public ArquivoService(ArquivoRepository arquivoRepository,
+                          @Value("${app.upload-dir}") String uploadDir) {
+        this.arquivoRepository = arquivoRepository;
+        this.uploadDir = uploadDir;
+    }
 
     public List<Arquivo> listarArquivos() {
         return arquivoRepository.findAll();

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package br.com.projeto.contabilidade.repository;
 
 import br.com.projeto.contabilidade.model.Arquivo;
@@ -12,10 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- *
- * @author PEDRO
- */
 @Repository
 public interface ArquivoRepository extends JpaRepository<Arquivo, Long>{
     Page<Arquivo> findAllByOrderByIdDesc(Pageable pageable);

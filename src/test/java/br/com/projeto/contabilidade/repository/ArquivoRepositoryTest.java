@@ -32,11 +32,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ArquivoRepositoryTest {
 
-    @Autowired
-    private ArquivoRepository arquivoRepository;
+    private final ArquivoRepository arquivoRepository;
+
+    private final TestEntityManager entityManager;
 
     @Autowired
-    private TestEntityManager entityManager;
+    public ArquivoRepositoryTest(ArquivoRepository arquivoRepository, TestEntityManager entityManager) {
+        this.arquivoRepository = arquivoRepository;
+        this.entityManager = entityManager;
+    }
 
     @BeforeEach
     void setUp() {
