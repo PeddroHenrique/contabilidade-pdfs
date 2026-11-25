@@ -5,6 +5,7 @@ import br.com.projeto.contabilidade.service.ArquivoService;
 import br.com.projeto.contabilidade.service.ClienteService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ContentDisposition;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -115,7 +117,10 @@ public class ArquivoController {
 
         if (Files.exists(filePath)) {
             response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "inline; filename=\"" + arquivo.getNomeArquivo());
+            ContentDisposition disposicao = ContentDisposition.inline()
+                    .filename(arquivo.getNomeArquivo(), StandardCharsets.UTF_8)
+                    .build();
+            response.setHeader("Content-Disposition", disposicao.toString());
             Files.copy(filePath, response.getOutputStream());
             response.getOutputStream().flush();
         } else {
