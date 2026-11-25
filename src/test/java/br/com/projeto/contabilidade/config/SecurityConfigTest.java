@@ -34,47 +34,48 @@ class SecurityConfigTest {
 
     @Test
     void paginaDeLogin_deveSerPublica() throws Exception {
-        mockMvc.perform(get("/api/login"))
+        mockMvc.perform(get("/login"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void paginaProtegida_semLogin_deveRedirecionarParaLogin() throws Exception {
-        mockMvc.perform(get("/api/arquivo"))
+        mockMvc.perform(get("/arquivos"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/api/login"));
+                .andExpect(redirectedUrl("/login"));
     }
 
     @Test
     void login_comSenhaCorreta_deveIrParaListaDeArquivos() throws Exception {
-        mockMvc.perform(formLogin("/api/login").user("teste").password("teste"))
-                .andExpect(redirectedUrl("/api/arquivo"));
+        mockMvc.perform(formLogin("/login").user("teste").password("teste"))
+                .andExpect(redirectedUrl("/arquivos"));
     }
 
     @Test
     void login_comSenhaErrada_deveVoltarComErro() throws Exception {
-        mockMvc.perform(formLogin("/api/login").user("teste").password("errada"))
-                .andExpect(redirectedUrl("/api/login?error"));
+        mockMvc.perform(formLogin("/login").user("teste").password("errada"))
+                .andExpect(redirectedUrl("/login?error"));
     }
 
     @Test
     @WithMockUser
     void post_semTokenCsrf_deveSerRecusado() throws Exception {
-        mockMvc.perform(post("/api/cliente/salvar").param("nome", "Cliente"))
+        mockMvc.perform(post("/clientes").param("nome", "Cliente"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser
     void post_comTokenCsrf_deveSerAceito() throws Exception {
-        mockMvc.perform(post("/api/cliente/salvar").param("nome", "Cliente").with(csrf()))
-                .andExpect(redirectedUrl("/api/cliente"));
+        mockMvc.perform(post("/clientes").param("nome", "Cliente").with(csrf()))
+                .andExpect(redirectedUrl("/clientes"));
     }
 
     @Test
     @WithMockUser
+
     void logout_deveRedirecionarParaLoginComMensagem() throws Exception {
-        mockMvc.perform(logout("/api/logout"))
-                .andExpect(redirectedUrl("/api/login?logout"));
+        mockMvc.perform(logout("/logout"))
+                .andExpect(redirectedUrl("/login?logout"));
     }
 }

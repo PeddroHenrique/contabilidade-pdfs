@@ -83,7 +83,7 @@ class ClienteControllerTest {
 
         String viewName = clienteController.salvarClientes(novoCliente);
 
-        assertThat(viewName).isEqualTo("redirect:/api/cliente");
+        assertThat(viewName).isEqualTo("redirect:/clientes");
         verify(clienteService).salvarCliente(novoCliente);
     }
 
@@ -95,7 +95,7 @@ class ClienteControllerTest {
 
         String viewName = clienteController.salvarClientes(cliente);
 
-        assertThat(viewName).isEqualTo("redirect:/api/cliente");
+        assertThat(viewName).isEqualTo("redirect:/clientes");
         verify(clienteService).listarCliente(1L);
         verify(clienteService).salvarCliente(cliente);
     }
@@ -129,7 +129,7 @@ class ClienteControllerTest {
 
         String viewName = clienteController.deletarCliente(1L);
 
-        assertThat(viewName).isEqualTo("redirect:/api/cliente");
+        assertThat(viewName).isEqualTo("redirect:/clientes");
         verify(clienteService).deletarCliente(1L);
     }
 }

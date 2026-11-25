@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 @Controller
-@RequestMapping("/api/arquivo")
+@RequestMapping("/arquivos")
 public class ArquivoController {
 
     private static final Logger log = LoggerFactory.getLogger(ArquivoController.class);
@@ -64,13 +64,13 @@ public class ArquivoController {
         return "arquivo/listar-arquivo";
     }
 
-    @GetMapping("/formulario")
+    @GetMapping("/novo")
     public String formularioArquivos(Arquivo arquivo, Model model) {
         model.addAttribute("clientes", clienteService.listarClientes());
         return "arquivo/formulario-arquivo";
     }
 
-    @PostMapping("/salvar")
+    @PostMapping
     public String salvarArquivos(@ModelAttribute("arquivo") Arquivo arquivo,
             @RequestParam("file") MultipartFile file,
             Model model) {
@@ -79,10 +79,10 @@ public class ArquivoController {
         } catch (IOException e) {
             log.error("Erro ao salvar o arquivo {}", file.getOriginalFilename(), e);
         }
-        return "redirect:/api/arquivo";
+        return "redirect:/arquivos";
     }
 
-    @GetMapping("/editar/{id}")
+    @GetMapping("/{id}/editar")
     public String editarArquivos(@PathVariable("id") Long id,
                                  Model model) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
@@ -91,7 +91,7 @@ public class ArquivoController {
         return "arquivo/editar-arquivo";
     }
 
-    @GetMapping("/visualizar/{id}")
+    @GetMapping("/{id}")
     public String visualizarArquivos(@PathVariable("id") Long id,
             Model model) {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
@@ -99,7 +99,7 @@ public class ArquivoController {
         return "arquivo/visualizar-arquivo";
     }
 
-    @PostMapping("/deletar/{id}")
+    @PostMapping("/{id}/excluir")
     public String deletarArquivos(@PathVariable("id") Long id,
             Model model) {
         try {
@@ -107,10 +107,10 @@ public class ArquivoController {
         } catch (IOException e) {
             log.error("Erro ao excluir o arquivo de id {}", id, e);
         }
-        return "redirect:/api/arquivo";
+        return "redirect:/arquivos";
     }
 
-    @GetMapping("vizualizar-pdf/{id}")
+    @GetMapping("/{id}/pdf")
     public void visualizarPdf(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
         Arquivo arquivo = arquivoService.listarArquivoPorId(id);
         Path filePath = Paths.get(arquivo.getCaminhoArquivo());

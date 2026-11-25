@@ -44,7 +44,7 @@
                             <h4 class="card-title mb-0">Formulário de Upload de Arquivo</h4>
                         </div>
                         <div class="card-body">
-                            <form th:object="${arquivo}" th:action="@{/api/arquivo/salvar}" enctype="multipart/form-data" method="POST">
+                            <form th:object="${arquivo}" th:action="@{/arquivos}" enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="id" th:value="${arquivo.id}">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -84,7 +84,7 @@
                                         <button type="submit" class="btn btn-success w-100">Enviar</button>
                                     </div>
                                     <div class="col-md-6">
-                                        <a th:href="@{/api/arquivo}" class="btn btn-danger w-100">Voltar</a>
+                                        <a th:href="@{/arquivos}" class="btn btn-danger w-100">Voltar</a>
                                     </div>
                                 </div>
                             </form>

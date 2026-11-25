@@ -19,7 +19,7 @@
                             <h4 class="card-title mb-0">Formulário de Upload de Cliente</h4>
                         </div>
                         <div class="card-body">
-                            <form th:object="${cliente}" th:action="@{/api/cliente/salvar}" method="POST">
+                            <form th:object="${cliente}" th:action="@{/clientes}" method="POST">
                                 <input type="hidden" th:field="*{id}" />
                                 <div class="row">
                                     <div class="col-md-12">
@@ -34,7 +34,7 @@
                                         <button type="submit" class="btn btn-success w-100">Enviar</button>
                                     </div>
                                     <div class="col md-6">
-                                        <a th:href="@{/api/cliente}" class="btn btn-danger w-100">Voltar</a>
+                                        <a th:href="@{/clientes}" class="btn btn-danger w-100">Voltar</a>
                                     </div>
                                 </div>
                             </form>
