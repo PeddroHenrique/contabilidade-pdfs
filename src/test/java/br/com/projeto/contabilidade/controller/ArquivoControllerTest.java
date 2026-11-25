@@ -233,7 +233,7 @@ class ArquivoControllerTest {
 
     @Test
     void visualizarPdf_nomeComAcentoEAspas_deveGerarCabecalhoValido() throws IOException {
-        arquivo.setNomeArquivo("Relatorio \"final\".pdf");
+        arquivo.setNomeArquivo("Relatório \"final\".pdf");
         when(arquivoService.listarArquivoPorId(anyLong())).thenReturn(arquivo);
 
         try (MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);
@@ -250,7 +250,7 @@ class ArquivoControllerTest {
             verify(response).setHeader(eq("Content-Disposition"), cabecalho.capture());
             assertThat(cabecalho.getValue())
                     .startsWith("inline")
-                    .contains("filename*=UTF-8''Relatorio%20%22final%22.pdf");
+                    .contains("filename*=UTF-8''Relat%C3%B3rio%20%22final%22.pdf");
         }
     }
 
