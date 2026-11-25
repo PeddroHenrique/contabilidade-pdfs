@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-md-5">
                     <div class="d-flex flex-wrap align-items-left justify-content-start mb-3">
-                        <form th:action="@{/api/arquivo}" method="get" class="d-flex">
+                        <form th:action="@{/arquivos}" method="get" class="d-flex">
                             <input type="text" name="search" class="form-control me-2" placeholder="Buscar por nome do cliente">
                             <button type="submit" class="btn btn-primary">Buscar</button>
                         </form>
@@ -28,9 +28,9 @@
                 <div class="col-md-4">
                     <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                         <div>
-                            <a th:href="@{/api/cliente}" class="btn btn-primary"><i class="bx bx-list-ul"></i> Listar Clientes</a>
-                            <a th:href="@{/api/arquivo/formulario}" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Novo Arquivo</a>
-                            <form th:action="@{/api/logout}" method="post" class="d-inline">
+                            <a th:href="@{/clientes}" class="btn btn-primary"><i class="bx bx-list-ul"></i> Listar Clientes</a>
+                            <a th:href="@{/arquivos/novo}" class="btn btn-primary"><i class="bx bx-plus me-1"></i> Novo Arquivo</a>
+                            <form th:action="@{/logout}" method="post" class="d-inline">
                                 <button type="submit" class="btn btn-danger" title="Sair">
                                     <i class="bx bx-log-out"></i>
                                 </button>
@@ -62,18 +62,18 @@
                                         <td>
                                             <ul class="list-inline mb-0">
                                                 <li class="list-inline-item">
-                                                    <a th:href="@{/api/arquivo/editar/{id} (id=${arquivo.id})}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar" class="px-2 text-primary"><i class="bx bx-pencil font-size-18"></i></a>
+                                                    <a th:href="@{/arquivos/{id}/editar(id=${arquivo.id})}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar" class="px-2 text-primary"><i class="bx bx-pencil font-size-18"></i></a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <form th:action="@{/api/arquivo/deletar/{id} (id=${arquivo.id})}" method="POST" onsubmit="return confirmarDeletar()">
+                                                    <form th:action="@{/arquivos/{id}/excluir(id=${arquivo.id})}" method="POST" onsubmit="return confirmarDeletar()">
                                                         <button type="submit" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar" class="px-2 text-danger border-0 bg-transparent"><i class="bx bx-trash-alt font-size-18"></i></button>
                                                     </form>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <a th:href="@{/api/arquivo/visualizar/{id} (id=${arquivo.id})}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar" class="px-2 text-primary"><i class="bx bx-search-alt-2 font-size-18"></i></a>
+                                                    <a th:href="@{/arquivos/{id}(id=${arquivo.id})}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar" class="px-2 text-primary"><i class="bx bx-search-alt-2 font-size-18"></i></a>
                                                 </li>
                                                 <li class="list-inline-item">
-                                                    <a th:href="@{/api/arquivo/vizualizar-pdf/{id} (id=${arquivo.id})}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar" class="px-2 text-primary"><i class="bx bxs-download font-size-18"></i></a>
+                                                    <a th:href="@{/arquivos/{id}/pdf(id=${arquivo.id})}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar" class="px-2 text-primary"><i class="bx bxs-download font-size-18"></i></a>
                                                 </li>
                                             </ul>
                                         </td>
@@ -97,13 +97,13 @@
                     <div class="float-sm-end">
                         <ul class="pagination mb-sm-0">
                             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled' : ''">
-                                <a th:href="@{/api/arquivo(page=${currentPage - 1}, size=${size})}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
+                                <a th:href="@{/arquivos(page=${currentPage - 1}, size=${size})}" class="page-link"><i class="mdi mdi-chevron-left"></i></a>
                             </li>
                             <li th:each="i : ${#numbers.sequence((currentPage > 1 ? currentPage - 1 : 0), (currentPage <= 1 ? (totalPages > 2 ? 2 : (totalPages > 0 ? totalPages - 1 : totalPages)) : (currentPage >= totalPages - 1 ? currentPage : currentPage + 1)))}" class="page-item" th:classappend="${i == currentPage} ? 'active' : ''">
-                                <a th:href="@{/api/arquivo(page=${i}, size=${size})}" class="page-link" th:text="${i + 1}"></a>
+                                <a th:href="@{/arquivos(page=${i}, size=${size})}" class="page-link" th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled' : ''">
-                                <a th:href="@{/api/arquivo(page=${currentPage + 1}, size=${size})}" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
+                                <a th:href="@{/arquivos(page=${currentPage + 1}, size=${size})}" class="page-link"><i class="mdi mdi-chevron-right"></i></a>
                             </li>
                         </ul>
                     </div>

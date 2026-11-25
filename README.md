@@ -42,7 +42,7 @@ Para rodar os testes:
 
 ## 💻 Uso
 
-Com a aplicação rodando, acesse http://localhost:8080/api/login
+Com a aplicação rodando, acesse http://localhost:8080/login
 
 Fora do perfil `dev`, os dados ficam em `%LOCALAPPDATA%\ContabilidadePDFs` (Windows) ou em `~/ContabilidadePDFs` (outros sistemas).
 

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/api/cliente")
+@RequestMapping("/clientes")
 public class ClienteController {
 
     private static final Logger log = LoggerFactory.getLogger(ClienteController.class);
@@ -45,12 +45,12 @@ public class ClienteController {
         return "cliente/listar-cliente";
     }
 
-    @GetMapping("/formulario")
+    @GetMapping("/novo")
     public String formularioClientes(@ModelAttribute("cliente") Cliente cliente) {
         return "cliente/formulario-cliente";
     }
 
-    @PostMapping("salvar")
+    @PostMapping
     public String salvarClientes(@ModelAttribute("cliente") Cliente cliente) {
         if (cliente.getId() != null) {
             Cliente clienteExistente = clienteService.listarCliente(cliente.getId());
@@ -59,10 +59,10 @@ public class ClienteController {
         } else {
             clienteService.salvarCliente(cliente);
         }
-        return "redirect:/api/cliente";
+        return "redirect:/clientes";
     }
 
-    @GetMapping("/editar/{id}")
+    @GetMapping("/{id}/editar")
     public String editarCliente(@PathVariable("id") Long id,
             Model model) {
         Cliente cliente = clienteService.listarCliente(id);
@@ -70,7 +70,7 @@ public class ClienteController {
         return "cliente/editar-cliente";
     }
 
-    @GetMapping("/visualizar/{id}")
+    @GetMapping("/{id}")
     public String visualizarCliente(@PathVariable("id") Long id,
             Model model) {
         Cliente cliente = clienteService.listarCliente(id);
@@ -78,13 +78,13 @@ public class ClienteController {
         return "cliente/visualizar-cliente";
     }
 
-    @PostMapping("/deletar/{id}")
+    @PostMapping("/{id}/excluir")
     public String deletarCliente(@PathVariable("id") Long id) {
         try {
             clienteService.deletarCliente(id);
         } catch (IOException e) {
             log.error("Erro ao excluir os arquivos do cliente de id {}", id, e);
         }
-        return "redirect:/api/cliente";
+        return "redirect:/clientes";
     }
 }

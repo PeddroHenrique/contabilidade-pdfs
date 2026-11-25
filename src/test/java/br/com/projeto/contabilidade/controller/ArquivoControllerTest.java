@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -135,7 +136,7 @@ class ArquivoControllerTest {
 
         String viewName = arquivoController.salvarArquivos(arquivo, file, model);
 
-        assertThat(viewName).isEqualTo("redirect:/api/arquivo");
+        assertThat(viewName).isEqualTo("redirect:/arquivos");
         verify(arquivoService).salvarArquivo(file, arquivo);
     }
 
@@ -147,7 +148,7 @@ class ArquivoControllerTest {
 
         String viewName = arquivoController.salvarArquivos(arquivo, file, model);
 
-        assertThat(viewName).isEqualTo("redirect:/api/arquivo");
+        assertThat(viewName).isEqualTo("redirect:/arquivos");
         verify(arquivoService, times(1)).salvarArquivo(file, arquivo);
         assertThatThrownBy(() -> arquivoService.salvarArquivo(file, arquivo))
                 .isInstanceOf(IOException.class);
@@ -187,7 +188,7 @@ class ArquivoControllerTest {
 
         String viewName = arquivoController.deletarArquivos(1L, model);
 
-        assertThat(viewName).isEqualTo("redirect:/api/arquivo");
+        assertThat(viewName).isEqualTo("redirect:/arquivos");
         verify(arquivoService).deletarArquivo(1L);
     }
 
@@ -199,7 +200,7 @@ class ArquivoControllerTest {
 
         String viewName = arquivoController.deletarArquivos(1L, model);
 
-        assertThat(viewName).isEqualTo("redirect:/api/arquivo");
+        assertThat(viewName).isEqualTo("redirect:/arquivos");
         assertThatThrownBy(() -> arquivoService.deletarArquivo(1L))
                 .isInstanceOf(IOException.class);
     }
@@ -227,6 +228,29 @@ class ArquivoControllerTest {
             filesMockedStatic.verify(() -> Files.exists(mockPath));
             filesMockedStatic.verify(() -> Files.copy(eq(mockPath), any()));
             verify(servletOutputStream).flush();
+        }
+    }
+
+    @Test
+    void visualizarPdf_nomeComAcentoEAspas_deveGerarCabecalhoValido() throws IOException {
+        arquivo.setNomeArquivo("Relatório \"final\".pdf");
+        when(arquivoService.listarArquivoPorId(anyLong())).thenReturn(arquivo);
+
+        try (MockedStatic<Paths> pathsMockedStatic = mockStatic(Paths.class);
+             MockedStatic<Files> filesMockedStatic = mockStatic(Files.class)) {
+
+            Path mockPath = mock(Path.class);
+            when(response.getOutputStream()).thenReturn(servletOutputStream);
+            pathsMockedStatic.when(() -> Paths.get(anyString())).thenReturn(mockPath);
+            filesMockedStatic.when(() -> Files.exists(any(Path.class))).thenReturn(true);
+
+            arquivoController.visualizarPdf(1L, response);
+
+            ArgumentCaptor<String> cabecalho = ArgumentCaptor.forClass(String.class);
+            verify(response).setHeader(eq("Content-Disposition"), cabecalho.capture());
+            assertThat(cabecalho.getValue())
+                    .startsWith("inline")
+                    .contains("filename*=UTF-8''Relat%C3%B3rio%20%22final%22.pdf");
         }
     }
 

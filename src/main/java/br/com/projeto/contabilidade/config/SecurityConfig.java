@@ -22,18 +22,16 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/api/login")
-                        .loginProcessingUrl("/api/login")
-                        .defaultSuccessUrl("/api/arquivo", true)
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/arquivos", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/api/logout")
-                        .logoutSuccessUrl("/api/login?logout")
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
         return http.build();
